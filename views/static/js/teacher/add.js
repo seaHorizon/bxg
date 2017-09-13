@@ -71,7 +71,7 @@ define(["jquery","template","utils"],function($,template,utils){
                 $.ajax({
                     url: "/api/teacher/add",
                     type: "post",
-                    data: $("form").rerialize(),
+                    data: $("form").serialize(),
                     success: function(data){
                         console.log(data);
                         if(data.code == 200){
