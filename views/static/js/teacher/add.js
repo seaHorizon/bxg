@@ -1,4 +1,4 @@
-define(["jquery","template","utils"],function($,template,utils){
+define(["jquery","template","utils","datepicker","datepickerCN","validate"],function($,template,utils){
     // 分析：点击添加讲师信息和编辑讲师信息公用了一个页面
     // 这样的好处：不知道，待后续补充
     // 添加讲师页面运用的插件有 jQuery template
@@ -39,17 +39,20 @@ define(["jquery","template","utils"],function($,template,utils){
                         data.result.url = "/api/teacher/update";
                         console.log(data.result);
                         $(".body,.teacher").html(template("teacher_add_edit_tpl",data.result))
-                        $("#btn-save").click(function(){
-                            $.ajax({
-                                url: "/api/teacher/update",
-                                type: "post",
-                                data: $("form").serialize(),
-                                success: function(data){
-                                    location.href = "/teacher/list";
-                                }
-                            })
-                            return false;
-                        })
+                        
+                        dateForm();
+
+                        // $("#btn-save").click(function(){
+                        //     $.ajax({
+                        //         url: "/api/teacher/update",
+                        //         type: "post",
+                        //         data: $("form").serialize(),
+                        //         success: function(data){
+                        //             location.href = "/teacher/list";
+                        //         }
+                        //     })
+                        //     return false;
+                        // })
                     }
                 }
             })
@@ -67,21 +70,84 @@ define(["jquery","template","utils"],function($,template,utils){
                 url: "/api/teacher/add"
             };
             $(".body,.teacher").html(template("teacher_add_edit_tpl",obj));
-            $("#btn-save").click(function(){
-                $.ajax({
-                    url: "/api/teacher/add",
-                    type: "post",
-                    data: $("form").serialize(),
-                    success: function(data){
-                        console.log(data);
-                        if(data.code == 200){
-                            location.href = "/teacher/list";
-                        }
-                    }
-                })
-                return false;
-            })
+            // 模板渲染到页面上之后 
+            //使用日期插件
+            // 使用方法 对象.datepicker();里面传一个对象参数
+            dateForm();
+
+            // $("#btn-save").click(function(){
+            //     $.ajax({
+            //         url: "/api/teacher/add",
+            //         type: "post",
+            //         data: $("form").serialize(),
+            //         success: function(data){
+            //             console.log(data);
+            //             if(data.code == 200){
+            //                 location.href = "/teacher/list";
+            //             }
+            //         }
+            //     })
+            //     return false;
+            // })
             
+        }
+
+        // 函数封装（日期插件和表单验证插件的代码封装）
+        function dateForm(){
+            // 日期插件：
+            $("input[name=tc_join_date]").datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true,
+                language: "zh-CN"
+
+            })
+
+            // 表单验证：
+            $("form").validate({
+                sendForm: false,
+                onBlur: true,
+                valid: function(){
+                    $.ajax({
+                        url: "/api/teacher/add",
+                        type: "post",
+                        data: $("form").serialize(),
+                        success: function(data){
+                            console.log(data);
+                            if(data.code == 200){
+                                location.href = "/teacher/list";
+                            }
+                        }
+                    })
+                },
+
+                description: {
+                    // 描述的内容是表单中新增的判断属性
+                    // 描述什么  描述data-description的值
+                    name: {
+                        required: "用户名不能为空"//required是判断输入的内容是否为空
+                    },
+
+                    pass: {
+                        required: "密码不能为空",
+                        pattern: "请输入6~15位的数字或字母"//pattern是表单内容的正则验证 看是否满足这个正则表达式
+                    },
+
+                    date: {
+                        required: "请输入入职时间"
+                    }
+                },
+
+                eachValidField:function(){
+                    // 每个input验证成功之后执行的函数
+                    this.parent().parent().addClass("has-success").removeClass("has-error");
+                },
+
+                eachInvalidField: function(){
+                    // 每个input验证失败之后执行的函数
+                    this.parent().parent().addClass("has-error").removeClass("has-success");
+                }
+
+            })
         }
     
 })

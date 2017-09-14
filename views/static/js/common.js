@@ -1,6 +1,10 @@
-define(["jquery","template","cookie"],function ($,template){
-
+define(["jquery","template","nprogress","cookie"],function ($,template,NProgress){
+	// 分析：发送每个ajax请求的时候我们都需要设置一个进度条 
+	// 还有每个页面跳转的时候也都需要设置一个进度条来读取
+	 
+	NProgress.start();
 	$(function(){
+		NProgress.done();
 
 		if(location.pathname != "/dashboard/login"){
 			if(!$.cookie("PHPSESSID")){
@@ -52,5 +56,32 @@ define(["jquery","template","cookie"],function ($,template){
 			$(ele).addClass("active");
 		}
 	});
+
+
+	// 在common.js中通过ajax Global Event为页面上所有的ajax请求注册相应的事件
+	// 查文档看全局ajax 事件的用法
+
+	// 1. ajaxStart
+	// 2. ajaxSend
+	// 3. ajaxSuccess
+	// 4. ajaxError
+	// 5. ajaxComplete
+	// 6. ajaxStop
+	
+	// ajaxStart ajaxStop 每个批次的ajax请求只会触发一次
+	// 其他的事件都是每个请求都会触发！
+
+	$(document).ajaxStart(function(){
+		//这里的ajax开始事件囊括了整个项目中所有的ajax请求
+		// 所以在给每个ajax请求设置进度条样式的时候 就可以在这里设置了
+		NProgress.start();
+	})
+
+	$(document).ajaxStop(function(){
+		
+		NProgress.done();
+	})
+
+	
 
 });

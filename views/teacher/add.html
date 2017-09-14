@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>学IT - 后台管理系统</title>
    <?php include "views/public/css.html"?>
+   <link rel="stylesheet" href="/views/assets/bootstrap-datepicker/css/bootstrap-datepicker3.css">
 </head>
 <body>
     
@@ -46,22 +47,31 @@
                         <div class="form-group">
                             <label for="" class="col-xs-3 control-label">姓名</label>
                             <div class="col-xs-4">
-                                <input type="text" name="tc_name" value="{{tc_name}}" class="form-control input-sm" placeholder="讲师名称">
+                                <input type="text" name="tc_name" value="{{tc_name}}" 
+                                class="form-control input-sm" placeholder="讲师名称"
+                                data-required data-trim data-description="name" data-describedby="msgforname">
                             </div>
+                            <span id="msgforname" class="col-xs-5 help-block"></span>
                         </div>
                         {{if !tc_id}}
                         <div class="form-group">
                             <label for="" class="col-xs-3 control-label">密码</label>
                             <div class="col-xs-4">
-                                <input type="password" name="tc_pass" class="form-control input-sm">
+                                <input type="password" name="tc_pass" class="form-control input-sm"
+                                data-required data-trim data-description="pass" data-describedby="msgforpass"
+                                data-pattern="^[a-zA-Z0-9]{6,15}$">
                             </div>
+                            <span id="msgforpass" class="col-xs-5 help-block"></span>
                         </div>
                         {{/if}}
                         <div class="form-group">
                             <label for="" class="col-xs-3 control-label">入职时间</label>
                             <div class="col-xs-4">
-                                <input type="text" name="tc_join_date" value="{{tc_join_date}}" class="form-control input-sm">
+                                <input type="text" name="tc_join_date" value="{{tc_join_date}}" 
+                                class="form-control input-sm"
+                                data-required data-trim data-description="date" data-describedby="msgfordate">
                             </div>
+                            <span id="msgfordate" class="col-xs-5 help-block"></span>
                         </div>
                         <div class="form-group">
                             <label for="" class="col-xs-3 control-label">类型</label>
